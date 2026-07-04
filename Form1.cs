@@ -35,11 +35,11 @@ namespace BaiTapLTM
         private int diemSo = 0;
         private Random rand = new Random();
 
-        // Bộ đếm thời gian
+        
         private System.Windows.Forms.Timer gameTimer;
         private int thoiGianConLai = 15;
 
-        // Các thành phần giao diện
+        
         private Label lblTitle;
         private GroupBox groupBoxSp;
         private Label lblTenSp;
@@ -64,7 +64,7 @@ namespace BaiTapLTM
 
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
 
-            // Khởi tạo bộ đếm thời gian
+            
             gameTimer = new System.Windows.Forms.Timer();
             gameTimer.Interval = 1000;
             gameTimer.Tick += GameTimer_Tick;
@@ -364,7 +364,7 @@ namespace BaiTapLTM
 
                 string message = Encoding.UTF8.GetString(buffer, 0, len);
 
-                MessageBox.Show(message);
+                lblStatus.Text = message;
             }
             catch (Exception ex)
             {
