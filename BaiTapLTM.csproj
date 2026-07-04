@@ -14,4 +14,9 @@
     <None Remove="BaitapLTM_Server\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
+
 </Project>
