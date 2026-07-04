@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="../BaitapLTM_Server/BaitapLTM_Server.csproj" Id="a92d5f6d-437e-4de7-9f9f-891f18cb5460" />
+  <Project Path="BaitapLTM_Server/BaitapLTM_Server.csproj" Id="a92d5f6d-437e-4de7-9f9f-891f18cb5460" />
   <Project Path="BaiTapLTM.csproj" />
 </Solution>
