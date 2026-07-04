@@ -56,7 +56,7 @@ namespace BaiTapLTM
         {
             InitializeComponent();
 
-            this.Text = "Ứng dụng Game Hãy Chọn Giá Đúng - Bản Đặc Biệt";
+            this.Text = "Ứng dụng Game Hãy Chọn Giá Đúng - Bản Nâng Cấp";
             this.Size = new Size(650, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
