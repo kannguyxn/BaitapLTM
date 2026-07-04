@@ -8,4 +8,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="BaitapLTM_Server\**" />
+    <EmbeddedResource Remove="BaitapLTM_Server\**" />
+    <None Remove="BaitapLTM_Server\**" />
+  </ItemGroup>
+
 </Project>
