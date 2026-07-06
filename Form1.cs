@@ -6,40 +6,21 @@ using System.IO;
 using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace BaiTapLTM
 {
-    public class SanPham
-    {
-        public string Ten { get; set; }
-        public string MoTa { get; set; }
-        public int Gia { get; set; }
-        public string TenFileAnh { get; set; }
 
-        public SanPham(string ten, string moTa, int gia, string tenFileAnh)
-        {
-            Ten = ten;
-            MoTa = moTa;
-            Gia = gia;
-            TenFileAnh = tenFileAnh;
-        }
-    }
 
     public partial class Form1 : Form
     {
-        private TcpClient client;
-        private NetworkStream stream;
-        private List<SanPham> danhSachSp;
-        private int indexHienTai = 0;
-        private int soLuotDoan = 5;
-        private int diemSo = 0;
-        private Random rand = new Random();
+        private TcpClient? client;
+        private NetworkStream? stream;
 
-        
         private System.Windows.Forms.Timer gameTimer;
         private int thoiGianConLai = 15;
 
-        
+
         private Label lblTitle;
         private GroupBox groupBoxSp;
         private Label lblTenSp;
@@ -64,14 +45,14 @@ namespace BaiTapLTM
 
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
 
-            
+
             gameTimer = new System.Windows.Forms.Timer();
             gameTimer.Interval = 1000;
             gameTimer.Tick += GameTimer_Tick;
 
-            KhoiTaoDuLieu();
+
             KhoiTaoGiaoDien();
-            HienThiSanPham();
+
             KetNoiServer();
         }
 
@@ -87,30 +68,12 @@ namespace BaiTapLTM
             }
         }
 
-        private void KhoiTaoDuLieu()
-        {
-            danhSachSp = new List<SanPham>()
-            {
-                new SanPham("Nồi chiên không dầu Philips", "Dung tích 4.1L, Công nghệ Rapid Air", 2200000, "noichien.png"),
-                new SanPham("Bình giữ nhiệt Lock&Lock", "Thép không gỉ, dung tích 500ml", 350000, "binhgiunhiet.png"),
-                new SanPham("Bàn phím cơ Logitech G213", "Đèn nền RGB, phím giả cơ chống nước", 1100000, "banphim.png"),
-                new SanPham("Tai nghe không dây Sony WH-CH520", "Thời lượng pin lên đến 50 giờ", 1200000, "tainghe.png"),
-                new SanPham("Chuột máy tính Logitech MX Master 3S", "Độ phân giải 8000 DPI, siêu mượt", 2500000, "chuot.png")
-            };
 
-            int n = danhSachSp.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rand.Next(n + 1);
-                SanPham value = danhSachSp[k];
-                danhSachSp[k] = danhSachSp[n];
-                danhSachSp[n] = value;
-            }
-        }
 
         private void KhoiTaoGiaoDien()
         {
+        
+
             lblTitle = new Label();
             lblTitle.Text = "HÃY CHỌN GIÁ ĐÚNG";
             lblTitle.Font = new Font("Arial", 26, FontStyle.Bold);
@@ -217,41 +180,7 @@ namespace BaiTapLTM
             this.Controls.Add(lblStatus);
         }
 
-        private void HienThiSanPham()
-        {
-            if (indexHienTai < danhSachSp.Count)
-            {
-                SanPham sp = danhSachSp[indexHienTai];
-                lblTenSp.Text = sp.Ten;
-                lblMoTaSp.Text = sp.MoTa;
 
-                string duongDanAnh = Path.Combine(Application.StartupPath, "Images", sp.TenFileAnh);
-                if (File.Exists(duongDanAnh))
-                {
-                    picSanPham.Image = Image.FromFile(duongDanAnh);
-                }
-                else
-                {
-                    picSanPham.Image = null;
-                }
-
-                soLuotDoan = 5;
-                thoiGianConLai = 15;
-                lblTimerHienThi.Text = "Thời gian: 15s";
-                lblTimerHienThi.ForeColor = Color.Yellow;
-                gameTimer.Start();
-
-                txtGiaDoan.Clear();
-                lblGoiY.Text = "Nhanh lên, đồng hồ đang chạy!";
-                lblGoiY.ForeColor = Color.Yellow;
-                CapNhatThanhTrangThai();
-                txtGiaDoan.Focus();
-            }
-            else
-            {
-                KetThucGame();
-            }
-        }
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
@@ -269,107 +198,166 @@ namespace BaiTapLTM
                 gameTimer.Stop();
                 Console.Beep(400, 500);
                 MessageBox.Show("Bạn đã hết thời gian suy nghĩ cho sản phẩm này!", "Hết giờ!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                indexHienTai++;
-                HienThiSanPham();
+                lblGoiY.Text = "Hết thời gian!";
+                lblGoiY.ForeColor = Color.Red;
+
+                // Báo cho Server biết đã hết giờ
+                if (stream != null)
+                {
+                    byte[] data = Encoding.UTF8.GetBytes("TIMEOUT");
+                    stream.Write(data, 0, data.Length);
+                }
             }
         }
 
-        private void CapNhatThanhTrangThai()
-        {
-            lblStatus.Text = $"Sản phẩm: {indexHienTai + 1}/{danhSachSp.Count}   |   Số lượt còn lại: {soLuotDoan}   |   Điểm tích lũy: {diemSo} điểm";
-        }
+
 
         private void BtnDoan_Click(object sender, EventArgs e)
         {
-            string chuoiNhap = txtGiaDoan.Text.Trim().Replace(".", "").Replace(",", "");
-            int giaDoan;
+            if (txtGiaDoan.Text == "")
+                return;
 
-            if (!int.TryParse(chuoiNhap, out giaDoan) || giaDoan <= 0)
+            if (stream == null)
             {
-                MessageBox.Show("Vui lòng chỉ nhập số nguyên dương hợp lệ!", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Chưa kết nối tới Server!");
                 return;
             }
 
-            SanPham spHienTai = danhSachSp[indexHienTai];
-            int giaDung = spHienTai.Gia;
-            soLuotDoan--;
+            string message = "GUESS|" + txtGiaDoan.Text;
 
-            if (giaDoan == giaDung)
-            {
-                gameTimer.Stop();
-                Console.Beep(1200, 300);
-                diemSo += 10;
-                MessageBox.Show($"Tuyệt vời! Giá đúng của {spHienTai.Ten} chính xác là {giaDung:N0} VNĐ.", "Chính xác!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                indexHienTai++;
-                HienThiSanPham();
-            }
-            else if (giaDoan < giaDung)
-            {
-                Console.Beep(500, 200);
-                lblGoiY.Text = "GIÁ THẬT CAO HƠN THẾ! ↑";
-                lblGoiY.ForeColor = Color.Cyan;
-            }
-            else
-            {
-                Console.Beep(500, 200);
-                lblGoiY.Text = "GIÁ THẬT THẤP HƠN THẾ! ↓";
-                lblGoiY.ForeColor = Color.Black;
-            }
+            byte[] data = Encoding.UTF8.GetBytes(message);
 
-            if (giaDoan != giaDung)
-            {
-                if (soLuotDoan <= 0)
-                {
-                    gameTimer.Stop();
-                    MessageBox.Show($"Bạn đã dùng hết 5 lượt đoán. Giá đúng của sản phẩm này là: {giaDung:N0} VNĐ.", "Hết lượt đoán!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    indexHienTai++;
-                    HienThiSanPham();
-                }
-                else
-                {
-                    CapNhatThanhTrangThai();
-                    txtGiaDoan.Clear();
-                    txtGiaDoan.Focus();
-                }
-            }
+            stream.Write(data, 0, data.Length);
         }
 
-        private void KetThucGame()
-        {
-            gameTimer.Stop();
-            int tongDiemToiDa = danhSachSp.Count * 10;
-            string danhHieu = "";
-
-            if (diemSo == tongDiemToiDa) danhHieu = "Dân chơi phố cổ - Đoán bách phát bách trúng! 👑";
-            else if (diemSo >= 30) danhHieu = "Tay hòm chìa khóa - Đi chợ siêu chuẩn! 💰";
-            else if (diemSo >= 10) danhHieu = "Người tiêu dùng thông thái! 👍";
-            else danhHieu = "Kẻ khờ khạo - Mua cái gì cũng bị hớ giá! 🤡";
-
-            MessageBox.Show($"Bạn đã hoàn thành trò chơi!\n\nTổng điểm đạt được: {diemSo} / {tongDiemToiDa}\nDanh hiệu: {danhHieu}", "Tổng kết cuộc chơi", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
-        }
-        private void KetNoiServer()
+          private void KetNoiServer()
         {
             try
             {
                 client = new TcpClient();
-
                 client.Connect("127.0.0.1", 8888);
 
                 stream = client.GetStream();
 
+                // Nhận sản phẩm đầu tiên
                 byte[] buffer = new byte[1024];
 
                 int len = stream.Read(buffer, 0, buffer.Length);
 
                 string message = Encoding.UTF8.GetString(buffer, 0, len);
 
-                lblStatus.Text = message;
+                XuLyDuLieu(message);
+
+                // Bắt đầu lắng nghe server liên tục
+                Thread thread = new Thread(NhanDuLieu);
+                thread.IsBackground = true;
+                thread.Start();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không kết nối được Server!\n" + ex.Message);
+                MessageBox.Show(ex.Message);
+            }
+        }
+        
+        private void NhanDuLieu()
+        {
+            byte[] buffer = new byte[1024];
+
+            while (true)
+            {
+                try
+                {
+                    int len = stream!.Read(buffer, 0, buffer.Length);
+
+                    if (len == 0)
+                        break;
+
+                    string message =
+                        Encoding.UTF8.GetString(buffer, 0, len);
+
+                    this.Invoke(new Action(() =>
+                    {
+                        XuLyDuLieu(message);
+                    }));
+                }
+                catch
+                {
+                    break;
+                }
+            }
+        }
+
+
+        private void XuLyDuLieu(string message)
+        {
+         
+            string[] data = message.Split('|');
+
+            switch (data[0])
+            {
+                case "PRODUCT":
+
+                    lblTenSp.Text = data[1];
+                    lblMoTaSp.Text = data[2];
+
+                    string duongDan = Path.Combine(
+                        Application.StartupPath,
+                        "Images",
+                        data[3]);
+
+                    if (File.Exists(duongDan))
+                    {
+                        if (picSanPham.Image != null)
+                        {
+                            picSanPham.Image.Dispose();
+                            picSanPham.Image = null;
+                        }
+
+                        picSanPham.Image = Image.FromFile(duongDan);
+                    }
+                    else
+                    {
+                        picSanPham.Image = null;
+                    }
+
+                    txtGiaDoan.Clear();
+                    lblGoiY.Text = "Nhập giá rồi nhấn ĐOÁN!";
+
+                    // RESET TIMER
+                    gameTimer.Stop();
+                    thoiGianConLai = 15;
+                    lblTimerHienThi.Text = "Thời gian: 15s";
+                    lblTimerHienThi.ForeColor = Color.Yellow;
+                    gameTimer.Start();
+
+                    break;
+
+                case "HIGHER":
+                    lblGoiY.Text = "⬆ Giá thật CAO HƠN!";
+                    break;
+
+                case "LOWER":
+                    lblGoiY.Text = "⬇ Giá thật THẤP HƠN!";
+                    break;
+
+                case "WIN":
+
+                    gameTimer.Stop();
+
+                    MessageBox.Show("Bạn đoán đúng!");
+
+                    break;
+
+                case "LOSE":
+                    MessageBox.Show("Bạn hết lượt đoán!");
+                    break;
+
+                case "END":
+                    MessageBox.Show("Trò chơi kết thúc!");
+                    Close();
+                    break;
             }
         }
     }
 }
+   

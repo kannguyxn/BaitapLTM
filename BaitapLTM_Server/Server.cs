@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace BaiTapLTM_Server
 {
@@ -17,23 +18,24 @@ namespace BaiTapLTM_Server
 
             Console.WriteLine("=================================");
             Console.WriteLine("SERVER DANG CHAY");
+            Console.WriteLine("Port: 8888");
             Console.WriteLine("=================================");
 
-            Console.WriteLine("Dang cho ket noi...");
+            while (true)
+            {
+                Console.WriteLine("Dang cho ket noi...");
 
-            TcpClient client = listener.AcceptTcpClient();
+                TcpClient client = listener.AcceptTcpClient();
 
-            Console.WriteLine("Da ket noi");
+                Console.WriteLine("Da co Client ket noi.");
 
-            NetworkStream stream = client.GetStream();
+                ClientHandler handler = new ClientHandler(client);
 
-            string message = "CONNECTED";
+                Thread thread = new Thread(handler.XuLyClient);
 
-            byte[] data = Encoding.UTF8.GetBytes(message);
-
-            stream.Write(data, 0, data.Length);
-
-            Console.WriteLine("Da gui du lieu.");
+                thread.Start();
+            }
         }
     }
 }
+     
