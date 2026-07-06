@@ -1,72 +1,85 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Collections.Generic;
 
 namespace BaiTapLTM_Server
 {
-    internal class Server
+    public class Server
     {
         private TcpListener listener;
-        private int soNguoiChoi = 0;
+
+        private List<ClientHandler> players = new List<ClientHandler>();
 
         private GameManager game = new GameManager();
-        private List<ClientHandler> players = new List<ClientHandler>();
 
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, 8888);
+
             listener.Start();
 
             Console.WriteLine("=================================");
-            Console.WriteLine("SERVER DANG CHAY");
+            Console.WriteLine("PRICE GUESS GAME SERVER");
             Console.WriteLine("Port: 8888");
+            Console.WriteLine("Waiting for players...");
             Console.WriteLine("=================================");
 
-            while (soNguoiChoi < 2)
+            while (players.Count < 2)
             {
-                Console.WriteLine($"Waiting Player {soNguoiChoi + 1}...");
-
                 TcpClient client = listener.AcceptTcpClient();
 
-                soNguoiChoi++;
+                Console.WriteLine($"Player {players.Count + 1} connected.");
 
-                Console.WriteLine($"Player {soNguoiChoi} connected.");
-
-                ClientHandler handler = new ClientHandler(client, game);
+                ClientHandler handler = new ClientHandler(client, game, this);
 
                 players.Add(handler);
             }
 
             Console.WriteLine();
-            Console.WriteLine("==================================");
-            Console.WriteLine("Both players connected!");
-            Console.WriteLine("Game is starting...");
-            Console.WriteLine("==================================");
+            Console.WriteLine("=================================");
+            Console.WriteLine("Both players connected.");
+            Console.WriteLine("Game Started!");
+            Console.WriteLine("=================================");
 
             foreach (ClientHandler player in players)
             {
                 Thread thread = new Thread(player.XuLyClient);
+                thread.IsBackground = true;
                 thread.Start();
             }
 
             GuiTatCaSanPham();
         }
 
-        private void GuiTatCaSanPham()
+        public void GuiTatCa(string message)
+        {
+            foreach (ClientHandler player in players)
+            {
+                player.Gui(message);
+            }
+        }
+
+        public void GuiTatCaSanPham()
         {
             Sanpham? sp = game.LaySanPham();
 
             if (sp == null)
-                return;
-
-            string msg = $"PRODUCT|{sp.Ten}|{sp.MoTa}|{sp.HinhAnh}";
-
-            foreach (ClientHandler player in players)
             {
-                player.Gui(msg);
+                GuiTatCa("END");
+                return;
             }
+
+            string msg =
+                $"PRODUCT|{sp.Ten}|{sp.MoTa}|{sp.HinhAnh}";
+
+            GuiTatCa(msg);
+        }
+
+        public GameManager LayGame()
+        {
+            return game;
         }
     }
 }

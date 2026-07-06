@@ -71,6 +71,7 @@ namespace BaiTapLTM_Server
         public void SanPhamTiepTheo()
         {
             ViTriHienTai++;
+            SoLuotConLai = 5;
             soLanDoanConLai = 3;
         }
 
@@ -85,8 +86,6 @@ namespace BaiTapLTM_Server
             if (giaDoan == sp.Gia)
             {
                 Diem += 10;
-                ViTriHienTai++;
-                SoLuotConLai = 5;
                 return "CORRECT";
             }
 
@@ -94,8 +93,7 @@ namespace BaiTapLTM_Server
 
             if (SoLuotConLai <= 0)
             {
-                ViTriHienTai++;
-                SoLuotConLai = 5;
+                SanPhamTiepTheo();
 
                 if (KetThucGame())
                     return "END";

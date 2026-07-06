@@ -9,21 +9,21 @@ namespace BaiTapLTM_Server
         private TcpClient client;
         private NetworkStream stream;
         private GameManager game;
+        private Server server;
 
-        public ClientHandler(TcpClient tcpClient, GameManager gameManager)
+        public ClientHandler(TcpClient tcpClient, GameManager gameManager, Server gameServer)
         {
             client = tcpClient;
             stream = client.GetStream();
 
             game = gameManager;
+            server = gameServer;
         }
 
         public void XuLyClient()
         {
             try
             {
-                
-
                 byte[] buffer = new byte[1024];
 
                 while (true)
@@ -38,9 +38,8 @@ namespace BaiTapLTM_Server
                     XuLyLenh(message);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("Client ngắt kết nối: " + ex.Message);
             }
             finally
             {
@@ -51,89 +50,69 @@ namespace BaiTapLTM_Server
 
         private void XuLyLenh(string message)
         {
-            Console.WriteLine("Nhan: " + message);
             string[] data = message.Split('|');
 
-            if (data[0] == "GUESS")
+            if (data[0] != "GUESS")
+                return;
+
+            int giaDoan = int.Parse(data[1]);
+
+            string ketQua = game.KiemTraGia(giaDoan);
+
+            switch (ketQua)
             {
-                int giaDoan = int.Parse(data[1]);
+                case "CORRECT":
 
-                string ketQua = game.KiemTraGia(giaDoan);
+                    Gui("WIN");
 
-                switch (ketQua)
-                {
-                    case "CORRECT":
-                        Gui("WIN");
-
+                    if (game.KetThucGame())
+                    {
+                        server.GuiTatCa("END");
+                    }
+                    else
+                    {
                         game.SanPhamTiepTheo();
 
-                        if (game.KetThucGame())
-                        {
-                            Gui("END");
-                        }
-                        else
-                        {
-                            GuiSanPham();
-                        }
-                        break;
+                        server.GuiTatCa("NEXT");
 
-                    case "HIGHER":
-                        Gui("HIGHER");
-                        break;
+                        server.GuiTatCaSanPham();
+                    }
 
-                    case "LOWER":
-                        Gui("LOWER");
-                        break;
+                    break;
 
-                    case "NEXT":
-                        Gui("LOSE");
-                        GuiSanPham();
-                        break;
+                case "HIGHER":
 
-                    case "END":
-                        Gui("END");
-                        break;
-                }
+                    Gui("HIGHER");
+
+                    break;
+
+                case "LOWER":
+
+                    Gui("LOWER");
+
+                    break;
+
+                case "NEXT":
+
+                    server.GuiTatCa("NEXT");
+
+                    server.GuiTatCaSanPham();
+
+                    break;
+
+                case "END":
+
+                    server.GuiTatCa("END");
+
+                    break;
             }
-            else if (data[0] == "TIMEOUT")
-            {
-                if (game.KetThucGame())
-                {
-                    Gui("END");
-                }
-                else
-                {
-                    GuiSanPham();
-                }
-            }
-        }
-
-        private void GuiSanPham()
-        {
-            Sanpham? sp = game.LaySanPham();
-
-            if (sp == null)
-            {
-                Gui("END"); // hoặc log lỗi rõ ràng
-                return;
-            }
-
-            string msg =
-                $"PRODUCT|{sp.Ten}|{sp.MoTa}|{sp.HinhAnh}";
-
-            Gui(msg);
         }
 
         public void Gui(string message)
-
-
         {
-            Console.WriteLine("Gui: " + message);
-
             byte[] data = Encoding.UTF8.GetBytes(message);
 
             stream.Write(data, 0, data.Length);
         }
-        
     }
 }
