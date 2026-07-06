@@ -10,11 +10,12 @@ namespace BaiTapLTM_Server
         private NetworkStream stream;
         private GameManager game;
 
-        public ClientHandler(TcpClient tcpClient)
+        public ClientHandler(TcpClient tcpClient, GameManager gameManager)
         {
             client = tcpClient;
             stream = client.GetStream();
-            game = new GameManager();
+
+            game = gameManager;
         }
 
         public void XuLyClient()

@@ -9,6 +9,9 @@ namespace BaiTapLTM_Server
     internal class Server
     {
         private TcpListener listener;
+        private int soNguoiChoi = 0;
+
+        private GameManager game = new GameManager();
 
         public void Start()
         {
@@ -21,20 +24,28 @@ namespace BaiTapLTM_Server
             Console.WriteLine("Port: 8888");
             Console.WriteLine("=================================");
 
-            while (true)
+            while (soNguoiChoi < 2)
             {
-                Console.WriteLine("Dang cho ket noi...");
+                Console.WriteLine($"Waiting Player {soNguoiChoi + 1}...");
 
                 TcpClient client = listener.AcceptTcpClient();
 
-                Console.WriteLine("Da co Client ket noi.");
+                soNguoiChoi++;
 
-                ClientHandler handler = new ClientHandler(client);
+                Console.WriteLine($"Player {soNguoiChoi} connected.");
+
+                ClientHandler handler = new ClientHandler(client, game);
 
                 Thread thread = new Thread(handler.XuLyClient);
 
                 thread.Start();
             }
+
+            Console.WriteLine();
+            Console.WriteLine("==================================");
+            Console.WriteLine("Both players connected!");
+            Console.WriteLine("Game is starting...");
+            Console.WriteLine("==================================");
         }
     }
 }
