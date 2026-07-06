@@ -4,13 +4,13 @@ namespace BaiTapLTM_Server
 {
     public class GameManager
     {
-        // Danh sách sản phẩm
+        
         public List<Sanpham> DanhSachSanPham { get; private set; }
 
-        // Vị trí sản phẩm hiện tại
+        
         public int ViTriHienTai { get; private set; }
 
-        // Điểm của người chơi
+        
         public int Diem { get; private set; }
         public int SoLuotConLai { get; private set; }
 
@@ -18,7 +18,7 @@ namespace BaiTapLTM_Server
         {
             DanhSachSanPham = new List<Sanpham>();
 
-            // Thêm sản phẩm
+            
             DanhSachSanPham.Add(new Sanpham(
                 "Nồi chiên không dầu Philips",
                 "Dung tích 4.1L - Công nghệ Rapid Air",
@@ -54,7 +54,7 @@ namespace BaiTapLTM_Server
             SoLuotConLai = 5;
         }
 
-        // Lấy sản phẩm hiện tại
+        
         public Sanpham LaySanPham()
         {
             if (ViTriHienTai >= DanhSachSanPham.Count)
@@ -74,7 +74,7 @@ namespace BaiTapLTM_Server
             soLanDoanConLai = 3;
         }
 
-        // Kiểm tra giá đoán
+       
         public string KiemTraGia(int giaDoan)
         {
             Sanpham? sp = LaySanPham();
@@ -109,17 +109,7 @@ namespace BaiTapLTM_Server
             return "LOWER";
         }
 
-        // Chuyển sang sản phẩm tiếp theo
         
-        
-            public void SanPhamTiepTheo()
-        {
-            ViTriHienTai++;
-            Console.WriteLine("ViTriHienTai = " + ViTriHienTai);
-        }
-        
-
-        // Kiểm tra kết thúc game
         public bool KetThucGame()
         {
             return ViTriHienTai >= DanhSachSanPham.Count;
