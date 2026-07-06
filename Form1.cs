@@ -230,7 +230,7 @@ namespace BaiTapLTM
             stream.Write(data, 0, data.Length);
         }
 
-          private void KetNoiServer()
+        private void KetNoiServer()
         {
             try
             {
@@ -239,16 +239,6 @@ namespace BaiTapLTM
 
                 stream = client.GetStream();
 
-                // Nhận sản phẩm đầu tiên
-                byte[] buffer = new byte[1024];
-
-                int len = stream.Read(buffer, 0, buffer.Length);
-
-                string message = Encoding.UTF8.GetString(buffer, 0, len);
-
-                XuLyDuLieu(message);
-
-                // Bắt đầu lắng nghe server liên tục
                 Thread thread = new Thread(NhanDuLieu);
                 thread.IsBackground = true;
                 thread.Start();
@@ -258,7 +248,7 @@ namespace BaiTapLTM
                 MessageBox.Show(ex.Message);
             }
         }
-        
+
         private void NhanDuLieu()
         {
             byte[] buffer = new byte[1024];
@@ -290,7 +280,6 @@ namespace BaiTapLTM
 
         private void XuLyDuLieu(string message)
         {
-         
             string[] data = message.Split('|');
 
             switch (data[0])
@@ -323,7 +312,6 @@ namespace BaiTapLTM
                     txtGiaDoan.Clear();
                     lblGoiY.Text = "Nhập giá rồi nhấn ĐOÁN!";
 
-                    // RESET TIMER
                     gameTimer.Stop();
                     thoiGianConLai = 15;
                     lblTimerHienThi.Text = "Thời gian: 15s";
@@ -341,18 +329,18 @@ namespace BaiTapLTM
                     break;
 
                 case "WIN":
-
                     gameTimer.Stop();
-
                     MessageBox.Show("Bạn đoán đúng!");
-
+                    lblGoiY.Text = "Đang chờ sản phẩm tiếp theo...";
                     break;
 
                 case "LOSE":
+                    gameTimer.Stop();
                     MessageBox.Show("Bạn hết lượt đoán!");
                     break;
 
                 case "END":
+                    gameTimer.Stop();
                     MessageBox.Show("Trò chơi kết thúc!");
                     Close();
                     break;
