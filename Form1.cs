@@ -201,7 +201,7 @@ namespace BaiTapLTM
                 lblGoiY.Text = "Hết thời gian!";
                 lblGoiY.ForeColor = Color.Red;
 
-                // Báo cho Server biết đã hết giờ
+                
                 if (stream != null)
                 {
                     byte[] data = Encoding.UTF8.GetBytes("TIMEOUT");

@@ -8,7 +8,7 @@ namespace BaiTapLTM
     {
         private TcpClient? client;
         private NetworkStream? stream;
-        // Kết nối tới Server
+        
         public bool Connect(string ip, int port)
         {
             try
@@ -24,7 +24,7 @@ namespace BaiTapLTM
             }
         }
 
-        // Gửi dữ liệu lên Server
+        
         public void Send(string message)
         {
             if (stream == null) return;
@@ -33,7 +33,7 @@ namespace BaiTapLTM
             stream.Write(data, 0, data.Length);
         }
 
-        // Nhận dữ liệu từ Server
+        
         public string Receive()
         {
             if (stream == null)
@@ -46,7 +46,7 @@ namespace BaiTapLTM
             return Encoding.UTF8.GetString(buffer, 0, length);
         }
 
-        // Đóng kết nối
+        
         public void Close()
         {
             stream?.Close();

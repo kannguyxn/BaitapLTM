@@ -10,8 +10,9 @@ namespace BaiTapLTM_Server
         
         public int ViTriHienTai { get; private set; }
 
-        
-        public int Diem { get; private set; }
+
+        public int DiemPlayer1 { get; private set; }
+        public int DiemPlayer2 { get; private set; }
         public int SoLuotConLai { get; private set; }
 
         public GameManager()
@@ -50,7 +51,8 @@ namespace BaiTapLTM_Server
                 "binh.png"));
 
             ViTriHienTai = 0;
-            Diem = 0;
+            DiemPlayer1 = 0;
+            DiemPlayer2 = 0;
             SoLuotConLai = 5;
         }
 
@@ -74,8 +76,14 @@ namespace BaiTapLTM_Server
             SoLuotConLai = 5;
             soLanDoanConLai = 3;
         }
+        public void CongDiem(int playerID)
+        {
+            if (playerID == 1)
+                DiemPlayer1 += 10;
+            else
+                DiemPlayer2 += 10;
+        }
 
-       
         public string KiemTraGia(int giaDoan)
         {
             Sanpham? sp = LaySanPham();
@@ -85,7 +93,6 @@ namespace BaiTapLTM_Server
 
             if (giaDoan == sp.Gia)
             {
-                Diem += 10;
                 return "CORRECT";
             }
 
@@ -111,6 +118,10 @@ namespace BaiTapLTM_Server
         public bool KetThucGame()
         {
             return ViTriHienTai >= DanhSachSanPham.Count;
+        }
+        public string KetQuaCuoi()
+        {
+            return $"GAMEOVER|{DiemPlayer1}|{DiemPlayer2}";
         }
     }
 }
