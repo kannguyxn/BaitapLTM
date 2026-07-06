@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace BaiTapLTM_Server
 {
@@ -12,11 +12,11 @@ namespace BaiTapLTM_Server
         private int soNguoiChoi = 0;
 
         private GameManager game = new GameManager();
+        private List<ClientHandler> players = new List<ClientHandler>();
 
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, 8888);
-
             listener.Start();
 
             Console.WriteLine("=================================");
@@ -36,9 +36,7 @@ namespace BaiTapLTM_Server
 
                 ClientHandler handler = new ClientHandler(client, game);
 
-                Thread thread = new Thread(handler.XuLyClient);
-
-                thread.Start();
+                players.Add(handler);
             }
 
             Console.WriteLine();
@@ -46,7 +44,29 @@ namespace BaiTapLTM_Server
             Console.WriteLine("Both players connected!");
             Console.WriteLine("Game is starting...");
             Console.WriteLine("==================================");
+
+            foreach (ClientHandler player in players)
+            {
+                Thread thread = new Thread(player.XuLyClient);
+                thread.Start();
+            }
+
+            GuiTatCaSanPham();
+        }
+
+        private void GuiTatCaSanPham()
+        {
+            Sanpham? sp = game.LaySanPham();
+
+            if (sp == null)
+                return;
+
+            string msg = $"PRODUCT|{sp.Ten}|{sp.MoTa}|{sp.HinhAnh}";
+
+            foreach (ClientHandler player in players)
+            {
+                player.Gui(msg);
+            }
         }
     }
 }
-     

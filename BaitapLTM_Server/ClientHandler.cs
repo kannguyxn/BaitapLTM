@@ -22,7 +22,7 @@ namespace BaiTapLTM_Server
         {
             try
             {
-                GuiSanPham();
+                
 
                 byte[] buffer = new byte[1024];
 
@@ -124,7 +124,9 @@ namespace BaiTapLTM_Server
             Gui(msg);
         }
 
-        private void Gui(string message)
+        public void Gui(string message)
+
+
         {
             Console.WriteLine("Gui: " + message);
 
@@ -132,5 +134,6 @@ namespace BaiTapLTM_Server
 
             stream.Write(data, 0, data.Length);
         }
+        
     }
 }
