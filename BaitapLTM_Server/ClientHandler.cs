@@ -10,14 +10,19 @@ namespace BaiTapLTM_Server
         private NetworkStream stream;
         private GameManager game;
         private Server server;
-
-        public ClientHandler(TcpClient tcpClient, GameManager gameManager, Server gameServer)
+        private int playerID;
+        public ClientHandler(
+    TcpClient tcpClient,
+    GameManager gameManager,
+    Server gameServer,
+    int id)
         {
             client = tcpClient;
             stream = client.GetStream();
 
             game = gameManager;
             server = gameServer;
+            playerID = id;
         }
 
         public void XuLyClient()
@@ -63,18 +68,18 @@ namespace BaiTapLTM_Server
             {
                 case "CORRECT":
 
+                    game.CongDiem(playerID);
+
                     Gui("WIN");
+
+                    game.SanPhamTiepTheo();
 
                     if (game.KetThucGame())
                     {
-                        server.GuiTatCa("END");
+                        server.KetThucGame();
                     }
                     else
                     {
-                        game.SanPhamTiepTheo();
-
-                        server.GuiTatCa("NEXT");
-
                         server.GuiTatCaSanPham();
                     }
 
@@ -94,15 +99,14 @@ namespace BaiTapLTM_Server
 
                 case "NEXT":
 
-                    server.GuiTatCa("NEXT");
-
-                    server.GuiTatCaSanPham();
-
-                    break;
-
-                case "END":
-
-                    server.GuiTatCa("END");
+                    if (game.KetThucGame())
+                    {
+                        server.KetThucGame();
+                    }
+                    else
+                    {
+                        server.GuiTatCaSanPham();
+                    }
 
                     break;
             }

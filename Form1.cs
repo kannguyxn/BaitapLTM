@@ -330,19 +330,40 @@ namespace BaiTapLTM
 
                 case "WIN":
                     gameTimer.Stop();
-                    MessageBox.Show("Bạn đoán đúng!");
-                    lblGoiY.Text = "Đang chờ sản phẩm tiếp theo...";
+                    lblStatus.Text = "🎉 Bạn đoán đúng!";
                     break;
 
                 case "LOSE":
                     gameTimer.Stop();
-                    MessageBox.Show("Bạn hết lượt đoán!");
+                    lblStatus.Text = "❌ Bạn hết lượt!";
                     break;
 
-                case "END":
+                case "GAMEOVER":
+
                     gameTimer.Stop();
-                    MessageBox.Show("Trò chơi kết thúc!");
+
+                    int p1 = int.Parse(data[1]);
+                    int p2 = int.Parse(data[2]);
+
+                    string ketQua;
+
+                    if (p1 > p2)
+                    {
+                        ketQua = $"🏆 Player 1 thắng!\n\nPlayer 1: {p1} điểm\nPlayer 2: {p2} điểm";
+                    }
+                    else if (p2 > p1)
+                    {
+                        ketQua = $"🏆 Player 2 thắng!\n\nPlayer 1: {p1} điểm\nPlayer 2: {p2} điểm";
+                    }
+                    else
+                    {
+                        ketQua = $"🤝 Hòa!\n\nPlayer 1: {p1} điểm\nPlayer 2: {p2} điểm";
+                    }
+
+                    MessageBox.Show(ketQua, "Kết quả");
+
                     Close();
+
                     break;
             }
         }

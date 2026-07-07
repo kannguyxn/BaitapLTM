@@ -32,7 +32,12 @@ namespace BaiTapLTM_Server
 
                 Console.WriteLine($"Player {players.Count + 1} connected.");
 
-                ClientHandler handler = new ClientHandler(client, game, this);
+                ClientHandler handler = new ClientHandler(
+    client,
+    game,
+    this,
+    players.Count + 1
+);
 
                 players.Add(handler);
             }
@@ -52,7 +57,15 @@ namespace BaiTapLTM_Server
 
             GuiTatCaSanPham();
         }
+        public void KetThucGame()
+        {
+            string msg = game.KetQuaCuoi();
 
+            foreach (ClientHandler player in players)
+            {
+                player.Gui(msg);
+            }
+        }
         public void GuiTatCa(string message)
         {
             foreach (ClientHandler player in players)
@@ -67,7 +80,7 @@ namespace BaiTapLTM_Server
 
             if (sp == null)
             {
-                GuiTatCa("END");
+                KetThucGame();
                 return;
             }
 
