@@ -52,7 +52,7 @@ namespace BaiTapLTM_Server
                 "Bình giữ nhiệt Lock&Lock",
                 "500ml",
                 350000,
-                "binh.png"));
+                "binhgiunhiet.png"));
 
             ViTriHienTai = 0;
             DiemPlayer1 = 0;
