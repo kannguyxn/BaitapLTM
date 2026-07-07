@@ -8,7 +8,7 @@ namespace BaiTapLTM_Server
 {
     public class Server
     {
-        private TcpListener listener;
+        private TcpListener? listener;
 
         private List<ClientHandler> players = new List<ClientHandler>();
 
