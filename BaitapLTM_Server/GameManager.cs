@@ -60,13 +60,15 @@ namespace BaiTapLTM_Server
             SoLuotConLai = 5;
         }
 
-        public Sanpham LaySanPham()
+        
+           public Sanpham? LaySanPham()
         {
             if (ViTriHienTai >= DanhSachSanPham.Count)
                 return null;
 
             return DanhSachSanPham[ViTriHienTai];
         }
+        
 
         public void SanPhamTiepTheo()
         {
