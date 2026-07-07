@@ -4,22 +4,26 @@ namespace BaiTapLTM_Server
 {
     public class GameManager
     {
-        
         public List<Sanpham> DanhSachSanPham { get; private set; }
 
-        
         public int ViTriHienTai { get; private set; }
-
 
         public int DiemPlayer1 { get; private set; }
         public int DiemPlayer2 { get; private set; }
+
         public int SoLuotConLai { get; private set; }
+
+        private int soLanDoanConLai = 3;
+        private bool daChuyenSanPham = false;
+        public int SoLanDoanConLai
+        {
+            get { return soLanDoanConLai; }
+        }
 
         public GameManager()
         {
             DanhSachSanPham = new List<Sanpham>();
 
-            
             DanhSachSanPham.Add(new Sanpham(
                 "Nồi chiên không dầu Philips",
                 "Dung tích 4.1L - Công nghệ Rapid Air",
@@ -56,7 +60,6 @@ namespace BaiTapLTM_Server
             SoLuotConLai = 5;
         }
 
-        
         public Sanpham LaySanPham()
         {
             if (ViTriHienTai >= DanhSachSanPham.Count)
@@ -64,18 +67,15 @@ namespace BaiTapLTM_Server
 
             return DanhSachSanPham[ViTriHienTai];
         }
-        private int soLanDoanConLai = 3;
 
-        public int SoLanDoanConLai
-        {
-            get { return soLanDoanConLai; }
-        }
         public void SanPhamTiepTheo()
         {
             ViTriHienTai++;
             SoLuotConLai = 5;
             soLanDoanConLai = 3;
+            ResetTrangThai();
         }
+
         public void CongDiem(int playerID)
         {
             if (playerID == 1)
@@ -100,11 +100,6 @@ namespace BaiTapLTM_Server
 
             if (SoLuotConLai <= 0)
             {
-                SanPhamTiepTheo();
-
-                if (KetThucGame())
-                    return "END";
-
                 return "NEXT";
             }
 
@@ -113,12 +108,24 @@ namespace BaiTapLTM_Server
 
             return "LOWER";
         }
+        public bool DaChuyenSanPham()
+        {
+            if (daChuyenSanPham)
+                return true;
 
-        
+            daChuyenSanPham = true;
+            return false;
+        }
+
+        public void ResetTrangThai()
+        {
+            daChuyenSanPham = false;
+        }
         public bool KetThucGame()
         {
             return ViTriHienTai >= DanhSachSanPham.Count;
         }
+
         public string KetQuaCuoi()
         {
             return $"GAMEOVER|{DiemPlayer1}|{DiemPlayer2}";

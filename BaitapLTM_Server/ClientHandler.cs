@@ -11,11 +11,12 @@ namespace BaiTapLTM_Server
         private GameManager game;
         private Server server;
         private int playerID;
+
         public ClientHandler(
-    TcpClient tcpClient,
-    GameManager gameManager,
-    Server gameServer,
-    int id)
+            TcpClient tcpClient,
+            GameManager gameManager,
+            Server gameServer,
+            int id)
         {
             client = tcpClient;
             stream = client.GetStream();
@@ -57,6 +58,25 @@ namespace BaiTapLTM_Server
         {
             string[] data = message.Split('|');
 
+            if (data[0] == "TIMEOUT")
+            {
+                if (game.DaChuyenSanPham())
+                    return;
+
+                game.SanPhamTiepTheo();
+
+                if (game.KetThucGame())
+                {
+                    server.KetThucGame();
+                }
+                else
+                {
+                    server.GuiTatCaSanPham();
+                }
+
+                return;
+            }
+
             if (data[0] != "GUESS")
                 return;
 
@@ -71,6 +91,8 @@ namespace BaiTapLTM_Server
                     game.CongDiem(playerID);
 
                     Gui("WIN");
+
+                    game.ResetTrangThai();
 
                     game.SanPhamTiepTheo();
 
@@ -99,6 +121,11 @@ namespace BaiTapLTM_Server
 
                 case "NEXT":
 
+                    if (game.DaChuyenSanPham())
+                        break;
+
+                    game.SanPhamTiepTheo();
+
                     if (game.KetThucGame())
                     {
                         server.KetThucGame();
@@ -115,7 +142,6 @@ namespace BaiTapLTM_Server
         public void Gui(string message)
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
-
             stream.Write(data, 0, data.Length);
         }
     }
