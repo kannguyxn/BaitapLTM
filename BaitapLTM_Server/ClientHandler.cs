@@ -11,6 +11,7 @@ namespace BaiTapLTM_Server
         private GameManager game;
         private Server server;
         private int playerID;
+        private static bool timeoutHandled = false;
 
         public ClientHandler(
             TcpClient tcpClient,
@@ -60,18 +61,23 @@ namespace BaiTapLTM_Server
 
             if (data[0] == "TIMEOUT")
             {
-                if (game.DaChuyenSanPham())
-                    return;
-
-                game.SanPhamTiepTheo();
-
-                if (game.KetThucGame())
+                lock (game)
                 {
-                    server.KetThucGame();
-                }
-                else
-                {
-                    server.GuiTatCaSanPham();
+                    if (timeoutHandled)
+                        return;
+
+                    timeoutHandled = true;
+
+                    game.SanPhamTiepTheo();
+
+                    if (game.KetThucGame())
+                    {
+                        server.KetThucGame();
+                    }
+                    else
+                    {
+                        server.GuiTatCaSanPham();
+                    }
                 }
 
                 return;
@@ -95,6 +101,7 @@ namespace BaiTapLTM_Server
                     game.ResetTrangThai();
 
                     game.SanPhamTiepTheo();
+                    timeoutHandled = false;
 
                     if (game.KetThucGame())
                     {
@@ -132,6 +139,7 @@ namespace BaiTapLTM_Server
                     }
                     else
                     {
+                        timeoutHandled = false;
                         server.GuiTatCaSanPham();
                     }
 
@@ -143,6 +151,10 @@ namespace BaiTapLTM_Server
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
+        }
+        public static void ResetTimeout()
+        {
+            timeoutHandled = false;
         }
     }
 }

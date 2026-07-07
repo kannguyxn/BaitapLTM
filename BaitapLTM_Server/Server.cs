@@ -56,6 +56,7 @@ namespace BaiTapLTM_Server
             }
 
             GuiTatCaSanPham();
+
         }
         public void KetThucGame()
         {
@@ -76,6 +77,8 @@ namespace BaiTapLTM_Server
 
         public void GuiTatCaSanPham()
         {
+            ClientHandler.ResetTimeout();
+
             Sanpham? sp = game.LaySanPham();
 
             if (sp == null)
@@ -88,7 +91,7 @@ namespace BaiTapLTM_Server
                 $"PRODUCT|{sp.Ten}|{sp.MoTa}|{sp.HinhAnh}";
 
             GuiTatCa(msg);
-        }
+        }   
 
         public GameManager LayGame()
         {

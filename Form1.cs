@@ -196,17 +196,15 @@ namespace BaiTapLTM
             if (thoiGianConLai <= 0)
             {
                 gameTimer.Stop();
-                Console.Beep(400, 500);
-                MessageBox.Show("Bạn đã hết thời gian suy nghĩ cho sản phẩm này!", "Hết giờ!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                lblGoiY.Text = "Hết thời gian!";
+
+                lblGoiY.Text = "Time's Up!";
                 lblGoiY.ForeColor = Color.Red;
 
-                
                 if (stream != null)
                 {
                     byte[] data = Encoding.UTF8.GetBytes("TIMEOUT");
                     stream.Write(data, 0, data.Length);
-                }
+                }   
             }
         }
 
@@ -336,6 +334,11 @@ namespace BaiTapLTM
                 case "LOSE":
                     gameTimer.Stop();
                     lblStatus.Text = "❌ Bạn hết lượt!";
+                    break;
+                case "NEXT":
+
+                    lblStatus.Text = "Loading next product...";
+
                     break;
 
                 case "GAMEOVER":
