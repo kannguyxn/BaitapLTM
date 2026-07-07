@@ -181,7 +181,7 @@ namespace BaiTapLTM
         }
 
 
-        private void GameTimer_Tick(object sender, EventArgs e)
+        private void GameTimer_Tick(object? sender, EventArgs e)
         {
             thoiGianConLai--;
             lblTimerHienThi.Text = $"Thời gian: {thoiGianConLai}s";
