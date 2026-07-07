@@ -21,17 +21,17 @@ namespace BaiTapLTM
         private int thoiGianConLai = 15;
 
 
-        private Label lblTitle;
-        private GroupBox groupBoxSp;
-        private Label lblTenSp;
-        private Label lblMoTaSp;
-        private PictureBox picSanPham;
-        private Label lblYeuCau;
-        private TextBox txtGiaDoan;
-        private Button btnDoan;
-        private Label lblGoiY;
-        private Label lblStatus;
-        private Label lblTimerHienThi;
+        private Label lblTitle = null!;
+        private GroupBox groupBoxSp = null!;
+        private Label lblTenSp = null!;
+        private Label lblMoTaSp = null!;
+        private PictureBox picSanPham = null!;
+        private Label lblYeuCau = null!;
+        private TextBox txtGiaDoan = null!;
+        private Button btnDoan = null!;
+        private Label lblGoiY = null!;
+        private Label lblStatus = null!;
+        private Label lblTimerHienThi = null!;
 
         public Form1()
         {
@@ -179,7 +179,6 @@ namespace BaiTapLTM
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             this.Controls.Add(lblStatus);
         }
-
 
 
         private void GameTimer_Tick(object sender, EventArgs e)
