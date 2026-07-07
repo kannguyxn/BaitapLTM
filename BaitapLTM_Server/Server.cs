@@ -21,9 +21,9 @@ namespace BaiTapLTM_Server
             listener.Start();
 
             Console.WriteLine("=================================");
-            Console.WriteLine("PRICE GUESS GAME SERVER");
+            Console.WriteLine("Máy chủ của trò chơi ");
             Console.WriteLine("Port: 8888");
-            Console.WriteLine("Waiting for players...");
+            Console.WriteLine("Đợi người chơi...");
             Console.WriteLine("=================================");
 
             while (players.Count < 2)
@@ -44,8 +44,8 @@ namespace BaiTapLTM_Server
 
             Console.WriteLine();
             Console.WriteLine("=================================");
-            Console.WriteLine("Both players connected.");
-            Console.WriteLine("Game Started!");
+            Console.WriteLine("Cả hai người chơi đã kết nối.");
+            Console.WriteLine("Bắt Đầu Game!");
             Console.WriteLine("=================================");
 
             foreach (ClientHandler player in players)
