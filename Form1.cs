@@ -144,7 +144,13 @@ namespace BaiTapLTM
             txtGiaDoan.Size = new Size(160, 30);
             txtGiaDoan.Location = new Point(260, 410);
             txtGiaDoan.TextAlign = HorizontalAlignment.Center;
-            txtGiaDoan.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) BtnDoan_Click(null, null); };
+            txtGiaDoan.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    BtnDoan_Click(s, EventArgs.Empty);
+                }
+            };
             this.Controls.Add(txtGiaDoan);
 
             btnDoan = new Button();
@@ -209,7 +215,7 @@ namespace BaiTapLTM
 
 
 
-        private void BtnDoan_Click(object sender, EventArgs e)
+        private void BtnDoan_Click(object? sender, EventArgs e)
         {
             if (txtGiaDoan.Text == "")
                 return;
