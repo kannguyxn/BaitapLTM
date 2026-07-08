@@ -25,6 +25,8 @@ namespace BaiTapLTM_Server
             game = gameManager;
             server = gameServer;
             playerID = id;
+
+            
         }
 
         public void XuLyClient()
@@ -130,9 +132,6 @@ namespace BaiTapLTM_Server
 
                 case "NEXT":
 
-                    if (game.DaChuyenSanPham())
-                        break;
-
                     game.SanPhamTiepTheo();
 
                     if (game.KetThucGame())
@@ -141,7 +140,6 @@ namespace BaiTapLTM_Server
                     }
                     else
                     {
-                        timeoutHandled = false;
                         server.GuiTatCaSanPham();
                     }
 

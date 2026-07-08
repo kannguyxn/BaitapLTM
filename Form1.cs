@@ -32,6 +32,7 @@ namespace BaiTapLTM
         private Label lblGoiY = null!;
         private Label lblStatus = null!;
         private Label lblTimerHienThi = null!;
+      
 
         public Form1()
         {
@@ -287,6 +288,7 @@ namespace BaiTapLTM
 
             switch (data[0])
             {
+               
                 case "PRODUCT":
 
                     lblTenSp.Text = data[1];
