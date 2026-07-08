@@ -57,8 +57,10 @@ namespace BaiTapLTM_Server
 
         private void XuLyLenh(string message)
         {
-            string[] data = message.Split('|');
+            Console.WriteLine("Nhận: " + message);
 
+            string[] data = message.Split('|');
+            
             if (data[0] == "TIMEOUT")
             {
                 lock (game)
@@ -149,6 +151,8 @@ namespace BaiTapLTM_Server
 
         public void Gui(string message)
         {
+            Console.WriteLine("Gửi: " + message);
+
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
         }
