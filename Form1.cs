@@ -32,7 +32,8 @@ namespace BaiTapLTM
         private Label lblGoiY = null!;
         private Label lblStatus = null!;
         private Label lblTimerHienThi = null!;
-      
+        private int playerID;
+
 
         public Form1()
         {
@@ -288,7 +289,14 @@ namespace BaiTapLTM
 
             switch (data[0])
             {
-               
+                case "PLAYER":
+
+                    playerID = int.Parse(data[1]);
+
+                    lblStatus.Text = $"Bạn là Player {playerID}";
+
+                    break;
+
                 case "PRODUCT":
 
                     lblTenSp.Text = data[1];

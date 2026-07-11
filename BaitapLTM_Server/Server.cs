@@ -40,6 +40,7 @@ namespace BaiTapLTM_Server
 );
 
                 players.Add(handler);
+                
             }
 
             Console.WriteLine();
@@ -54,6 +55,10 @@ namespace BaiTapLTM_Server
                 thread.IsBackground = true;
                 thread.Start();
             }
+            players[0].Gui("PLAYER|1");
+            players[1].Gui("PLAYER|2");
+
+            Thread.Sleep(100);
 
             GuiTatCaSanPham();
 
