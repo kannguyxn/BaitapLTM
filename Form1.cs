@@ -11,7 +11,6 @@ using System.Threading;
 namespace BaiTapLTM
 {
 
-
     public partial class Form1 : Form
     {
         private TcpClient? client;
@@ -197,7 +196,7 @@ namespace BaiTapLTM
             if (thoiGianConLai <= 5)
             {
                 lblTimerHienThi.ForeColor = Color.Red;
-                Console.Beep(800, 150);
+                Console.Beep(800, 150); // Âm thanh tiếng Bíp
             }
 
             if (thoiGianConLai <= 0)
