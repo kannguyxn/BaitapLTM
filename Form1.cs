@@ -219,15 +219,15 @@ namespace BaiTapLTM
         private void BtnDoan_Click(object? sender, EventArgs e)
         {
             if (txtGiaDoan.Text == "")
-                return;
+                return; // Kiểm tra nhập giá
 
-            if (stream == null)
+            if (stream == null) // Kiểm tra kết nối Server
             {
                 MessageBox.Show("Chưa kết nối tới Server!");
-                return;
+                return; 
             }
 
-            string message = "GUESS|" + txtGiaDoan.Text;
+            string message = "GUESS|" + txtGiaDoan.Text; // Tạo chuỗi gửi
 
             byte[] data = Encoding.UTF8.GetBytes(message);
 
@@ -247,7 +247,7 @@ namespace BaiTapLTM
                 thread.IsBackground = true;
                 thread.Start();
             }
-            catch (Exception ex)
+            catch (Exception ex) // Hiển thị thông báo lỗi
             {
                 MessageBox.Show(ex.Message);
             }
@@ -324,7 +324,7 @@ namespace BaiTapLTM
                     txtGiaDoan.Clear();
                     lblGoiY.Text = "Nhập giá rồi nhấn ĐOÁN!";
 
-                    gameTimer.Stop();
+                    gameTimer.Stop(); // Khởi động lại bộ đếm
                     thoiGianConLai = 15;
                     lblTimerHienThi.Text = "Thời gian: 15s";
                     lblTimerHienThi.ForeColor = Color.Yellow;
@@ -357,12 +357,12 @@ namespace BaiTapLTM
 
                 case "GAMEOVER":
 
-                    gameTimer.Stop();
+                    gameTimer.Stop(); // Đọc điểm
 
                     int p1 = int.Parse(data[1]);
                     int p2 = int.Parse(data[2]);
 
-                    string ketQua;
+                    string ketQua; // So sánh kết quả
 
                     if (p1 > p2)
                     {
